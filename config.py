@@ -144,7 +144,8 @@ def gen_args():
         args.lim = [-1., 1., -1., 1.]
 
         args.prior = torch.FloatTensor(
-            np.array([0.4, 0.3, 0.3])).cuda()
+            # np.array([0.4, 0.3, 0.3])).cuda()
+            np.array([0.4, 0.3, 0.3])) # [Jiaqi Note] Disable CUDA
 
     elif args.env == 'Cloth':
         args.data_names = ['states', 'actions', 'scene_params']
@@ -175,7 +176,8 @@ def gen_args():
         args.crop_size = 64
 
         args.lim = [-1., 1., -1., 1.]
-        args.prior = torch.FloatTensor(np.array([0.85, 0.15])).cuda()
+        # args.prior = torch.FloatTensor(np.array([0.85, 0.15])).cuda()
+        args.prior = torch.FloatTensor(np.array([0.85, 0.15])) # [Jiaqi Note] Disable CUDA
 
     else:
         raise AssertionError("Unsupported env %s" % args.env)

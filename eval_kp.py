@@ -40,7 +40,8 @@ if args.stage == 'kp':
             args.outf_kp, 'net_kp_epoch_%d_iter_%d.pth' % (args.eval_kp_epoch, args.eval_kp_iter))
 
     print("Loading saved ckp from %s" % model_path)
-    model_kp.load_state_dict(torch.load(model_path))
+    # model_kp.load_state_dict(torch.load(model_path))
+    model_kp.load_state_dict(torch.load(model_path, map_location=torch.device('cpu'))) # [Jiaqi Note] Disable CUDA
     model_kp.eval()
 
     if use_gpu:
@@ -68,7 +69,9 @@ trans_to_tensor = transforms.Compose([
 '''
 store results
 '''
-os.system('mkdir -p ' + args.evalf)
+args.evalf = os.path.join("./", args.evalf) # [Jiaqi Notes] For Windows system
+# os.system('mkdir -p ' + args.evalf)
+os.makedirs(args.evalf, exist_ok=True) # [Jiaqi Notes] For Windows system
 
 log_path = os.path.join(args.evalf, 'log.txt')
 tee = Tee(log_path, 'w')
@@ -101,7 +104,8 @@ def evaluate(roll_idx, video=True, image=True):
         img = loader(img_path)
 
         img = resize_and_crop('valid', img, args.scale_size, args.crop_size)
-        img = trans_to_tensor(img).unsqueeze(0).cuda()
+        # img = trans_to_tensor(img).unsqueeze(0).cuda()
+        img = trans_to_tensor(img).unsqueeze(0) # [Jiaqi Note] To disable CUDA
         imgs.append(img)
 
     imgs = torch.cat(imgs, 0)
